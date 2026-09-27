@@ -1,21 +1,18 @@
 package base;
 
 import config.ConfigManager;
+import io.qameta.allure.testng.AllureTestNg;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 
 /**
  * Base class for all API test classes.
- * Provides a fresh request spec for each call, and adds a small delay
- * before each test to avoid hitting the free API's rate limit.
+ * @Listeners registers Allure's TestNG listener so every test result
+ * gets recorded for the Allure report.
  */
+@Listeners(AllureTestNg.class)
 public class BaseTest {
-
-    @BeforeMethod
-    public void delayBetweenRequests() throws InterruptedException {
-        Thread.sleep(500); // wait 0.5 second before each test
-    }
 
     protected RequestSpecification baseSpec() {
         return new RequestSpecBuilder()
