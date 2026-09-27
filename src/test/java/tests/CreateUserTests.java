@@ -1,6 +1,7 @@
 package tests;
 
 import base.BaseTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -11,15 +12,29 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class CreateUserTests extends BaseTest {
 
-    @Test
-    public void createUser_shouldReturnStatus201() {
-        given() .spec(baseSpec())
-                .body("{\"name\": \"Ahmed\", \"job\": \"QA Engineer\"}")
+    /**
+     * Provides multiple name/job combinations to test user creation with.
+     * Each row here = one full run of the test method below.
+     */
+    @DataProvider(name = "userData")
+    public Object[][] userData() {
+        return new Object[][] {
+                { "Ahmed", "QA Engineer" },
+                { "Sara", "Backend Developer" },
+                { "Omar", "Product Manager" }
+        };
+    }
+
+    @Test(dataProvider = "userData")
+    public void createUser_shouldReturnStatus201(String name, String job) {
+        given()
+                .spec(baseSpec())
+                .body("{\"name\": \"" + name + "\", \"job\": \"" + job + "\"}")
                 .when()
                 .post("https://reqres.in/api/users")
                 .then()
                 .statusCode(201)
-                .body("name", equalTo("Ahmed"))
-                .body("job", equalTo("QA Engineer"));
+                .body("name", equalTo(name))
+                .body("job", equalTo(job));
     }
 }
