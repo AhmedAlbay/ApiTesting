@@ -72,4 +72,15 @@ public class FirstApiTest {
                 .statusCode(200)
                 .body("job", equalTo("Senior QA Engineer"));
     }
+    /**
+     * Verifies that deleting an existing user (id = 2) returns status code 204.
+     */
+    @Test
+    public void deleteUser_shouldReturnStatus204(){
+        given()
+                .when()
+                .delete("https://reqres.in/api/users/2")
+                .then()
+                .statusCode(204)
+    ;}
 }
