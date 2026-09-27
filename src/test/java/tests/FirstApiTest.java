@@ -14,11 +14,25 @@ public class FirstApiTest {
     @Test
     public void getSingleUser_returnStatus200(
 
-            ){
+    ) {
         given()
                 .when()
                 .get("https://reqres.in/api/users/2")
                 .then()
-                .statusCode(200).body("data.id" ,equalTo(2)).body("data.email", containsString("@"));
+                .statusCode(200)
+                .body("data.id", equalTo(2))
+                .body("data.email", containsString("@"));
+    }
+
+    @Test
+    public void createUser_shouldReturnStatus201() {
+        given()
+                .contentType("application/json")
+                .body("{\"name\": \"Ahmed\",\"job\": \"QA Engineer\"}")
+                .when().post("https://reqres.in/api/users")
+                .then()
+                .statusCode(201)
+                .body("name", equalTo("Ahmed"))
+                .body("job", equalTo("QA Engineer"));
     }
 }
