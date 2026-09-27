@@ -20,5 +20,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Create config.properties from secret
+        run: echo "api.key=${{ secrets.API_KEY }}" > src/test/resources/config.properties
+
       - name: Run tests with Maven
         run: mvn clean test
