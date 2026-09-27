@@ -94,4 +94,16 @@ public class FirstApiTest {
                 .then()
                 .statusCode(404);
     }
+    /**
+     * Negative test: requesting a user without the API key should return 401.
+     */
+    @Test
+    public void getSingleUser_withoutApiKey_shouldReturnStatus403() {
+        given()
+                .header("x-api-key", "")   // override the key with an empty value
+                .when()
+                .get("https://reqres.in/api/users/2")
+                .then()
+                .statusCode(403);
+    }
 }
