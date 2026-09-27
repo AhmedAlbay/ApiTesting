@@ -1,6 +1,11 @@
 package tests;
 
 
+import config.ConfigManager;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.specification.RequestSpecification;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -8,6 +13,25 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 public class FirstApiTest {
+
+    /**
+     * Runs once before any test in this class.
+     * Sets up shared request settings (headers, content type)
+     * so every test doesn't have to repeat them.
+     */
+    @BeforeClass
+    public void setup() {
+
+        // Build a reusable request specification with the API key and content type
+        RequestSpecification requestSpec = new RequestSpecBuilder()
+                .addHeader("x-api-key", ConfigManager.getApiKey())   // read the key from config.properties, not hardcoded
+                .setContentType("application/json")                  // applies to every request automatically
+                .build();
+
+        // Tell RestAssured to use this spec for every request in this class
+        RestAssured.requestSpecification = requestSpec;
+    }
+
     /**
      * Verifies that fetching an existing user (id = 2) returns status code 200.
      */
@@ -34,5 +58,18 @@ public class FirstApiTest {
                 .statusCode(201)
                 .body("name", equalTo("Ahmed"))
                 .body("job", equalTo("QA Engineer"));
+    }
+    /**
+     * Verifies that updating an existing user (id = 2) returns status code 200.
+     */
+    @Test
+    public void updateUser_shouldReturnStatus200(){
+    given()
+            .body("{\"name\": \"Ahmed\", \"job\": \"Senior QA Engineer\"}")
+        .when()
+                .put("https://reqres.in/api/users/2")
+                .then()
+                .statusCode(200)
+                .body("job", equalTo("Senior QA Engineer"));
     }
 }
