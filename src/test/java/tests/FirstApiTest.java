@@ -83,4 +83,15 @@ public class FirstApiTest {
                 .then()
                 .statusCode(204)
     ;}
+    /**
+     * Negative test: requesting a user that doesn't exist should return 404.
+     */
+    @Test
+    public void getSingleUser_notFound_shouldReturnStatus404() {
+        given()
+                .when()
+                .get("https://reqres.in/api/users/999")
+                .then()
+                .statusCode(404);
+    }
 }
